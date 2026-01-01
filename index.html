@@ -4,495 +4,246 @@
   <meta charset="UTF-8" />
   <title>European CCSI Brain Map</title>
   <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      margin: 0;
-      padding: 2rem;
-      background: #f4f5fb;
-      color: #112244;
+    :root {
+      --bg: #020617;
+      --accent: #f97316;
+      --accent-soft: #ffedd5;
+      --text: #0f172a;
+      --panel-bg: #f9fafb;
+      --brain-bg: #e5e7eb;
+      --stroke: #9ca3af;
     }
 
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #0b1120 0, #020617 55%, #000 100%);
+      color: var(--text);
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      max-width: 1100px;
+      width: 100%;
+      padding: 2rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow:
+        0 18px 40px rgba(15, 23, 42, 0.25),
+        0 0 0 1px rgba(15, 23, 42, 0.05);
+      padding: 1.5rem 1.75rem;
+    }
+
+    .brain-wrapper { flex: 1 1 420px; }
+    .info-panel   { flex: 1 1 360px; background: var(--panel-bg); }
+
     h1 {
-      margin-top: 0;
-      font-size: 1.8rem;
+      margin: 0 0 0.25rem;
+      font-size: 1.4rem;
+      letter-spacing: 0.02em;
     }
 
     .subtitle {
-      font-size: 0.95rem;
-      max-width: 720px;
-      margin-bottom: 1.5rem;
+      margin: 0 0 1rem;
+      font-size: 0.85rem;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
     }
 
-    .brain-layout {
-      display: grid;
-      grid-template-columns: minmax(320px, 480px) minmax(320px, 1fr);
-      gap: 2rem;
-      align-items: center;
+    .brain-svg { width: 100%; height: auto; display: block; }
+
+    .brain-outline {
+      fill: none;
+      stroke: rgba(148, 163, 184, 0.6);
+      stroke-width: 3;
+      stroke-dasharray: 6 6;
     }
 
-    /* NIEUWE brain-container zonder overlap: 3x3 grid */
-    .brain {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 4 / 3;
-      background: radial-gradient(circle at 30% 30%, #ffffff, #dde4ff);
-      border-radius: 50% / 60%;
-      box-shadow: 0 18px 40px rgba(10, 30, 80, 0.18);
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-      padding: 1.2rem;
-      gap: 1.2rem;
-      box-sizing: border-box;
-    }
+    .brain-bg { fill: #f3f4f6; }
 
-    .brain-node {
-      border: none;
-      border-radius: 999px;
-      padding: 0.45rem 0.9rem;
-      font-size: 0.8rem;
-      background: #ffffffdd;
-      box-shadow: 0 4px 12px rgba(6, 35, 90, 0.2);
+    .lobe {
       cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-      backdrop-filter: blur(4px);
-      white-space: normal;
-      text-align: center;
-      justify-self: center;
-      align-self: center;
-      max-width: 100%;
+      transition: transform 0.2s ease, filter 0.2s ease;
+      outline: none;
     }
 
-    .brain-node:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 18px rgba(6, 35, 90, 0.25);
-      background: #eef3ff;
+    .lobe ellipse {
+      fill: var(--brain-bg);
+      stroke: var(--stroke);
+      stroke-width: 1.8;
+      transition: fill 0.2s ease, stroke 0.2s ease, stroke-width 0.2s ease;
     }
 
-    .brain-node.active {
-      background: #2647ff;
-      color: #ffffff;
-      box-shadow: 0 10px 22px rgba(38, 71, 255, 0.45);
-    }
-
-    /* Plaatsing in grid (geen overlap mogelijk) */
-    .node-creators  { grid-row: 1; grid-column: 1; }
-    .node-creative  { grid-row: 1; grid-column: 3; }
-    .node-cmos      { grid-row: 2; grid-column: 3; }
-    .node-unions    { grid-row: 3; grid-column: 1; }
-    .node-heritage  { grid-row: 3; grid-column: 3; }
-    .node-education { grid-row: 2; grid-column: 1; }
-
-    .brain-center-label {
-      grid-row: 2;
-      grid-column: 2;
-      align-self: center;
-      justify-self: center;
-      width: 90%;
-      text-align: center;
-      font-size: 0.78rem;
-      color: #4b5680;
-      line-height: 1.3;
-      padding: 0.4rem 0.6rem;
-    }
-
-    /* Detail panel */
-    .panel {
-      background: #ffffff;
-      border-radius: 24px;
-      padding: 1.5rem 1.75rem;
-      box-shadow: 0 18px 40px rgba(10, 30, 80, 0.12);
-      max-height: 80vh;
-      overflow: auto;
-    }
-
-    .panel h2 {
-      margin-top: 0;
-      font-size: 1.4rem;
-    }
-
-    .tagline {
-      font-size: 0.9rem;
-      color: #5a648a;
-      margin-bottom: 1rem;
-    }
-
-    .org-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .org-item {
-      padding: 0.5rem 0;
-      border-bottom: 1px solid #e1e4f0;
-    }
-
-    .org-item:last-child {
-      border-bottom: none;
-    }
-
-    .org-name {
+    .lobe text {
+      pointer-events: none;
+      font-size: 11px;
       font-weight: 600;
-      font-size: 0.95rem;
+      fill: #111827;
     }
 
-    .org-meta {
-      font-size: 0.78rem;
-      color: #7a84a8;
+    .lobe:hover ellipse,
+    .lobe:focus-visible ellipse,
+    .lobe.active ellipse {
+      fill: rgba(249, 115, 22, 0.12);
+      stroke: var(--accent);
+      stroke-width: 2.3;
     }
 
-    .org-role {
+    .lobe:hover,
+    .lobe:focus-visible,
+    .lobe.active {
+      transform: translateY(-2px);
+      filter: drop-shadow(0 4px 8px rgba(15, 23, 42, 0.25));
+    }
+
+    .hint {
+      margin-top: 0.75rem;
       font-size: 0.8rem;
-      margin-top: 0.2rem;
-      color: #344066;
+      color: #6b7280;
     }
 
-    .org-url a {
-      font-size: 0.78rem;
-      color: #2647ff;
-      text-decoration: none;
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      background: var(--accent-soft);
+      color: #9a3412;
     }
 
-    .org-url a:hover {
-      text-decoration: underline;
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
     }
 
-    @media (max-width: 900px) {
-      .brain-layout {
-        grid-template-columns: 1fr;
-      }
+    .lobe-title {
+      margin: 0.4rem 0 0.2rem;
+      font-size: 1.25rem;
+    }
+
+    .lobe-subtitle {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    .info-body {
+      margin-top: 0.9rem;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #4b5563;
+    }
+
+    .info-body ul {
+      margin: 0.5rem 0 0;
+      padding-left: 1.1rem;
+    }
+
+    .info-body li { margin-bottom: 0.25rem; }
+
+    @media (max-width: 840px) {
+      body { align-items: stretch; }
+      .container { padding: 1.25rem; }
+      .card { padding: 1.25rem 1.25rem 1.5rem; }
     }
   </style>
 </head>
 <body>
-  <h1>European CCSI Brain Map</h1>
-  <p class="subtitle">
-    Click on a “brain lobe” to explore the main European networks and social partners in that
-    part of the cultural and creative ecosystem – and see how they connect to rights,
-    working conditions and skills in the new EU long-term budget (2028–2034).
-  </p>
+  <div class="container">
+    <!-- LEFT: BRAIN -->
+    <section class="card brain-wrapper">
+      <h1>European CCSI Brain Map</h1>
+      <p class="subtitle">Networks and social partners</p>
 
-  <div class="brain-layout">
-    <div class="brain" id="brain">
-      <button class="brain-node node-creators" data-family="creators">Creators &amp; Copyright</button>
-      <button class="brain-node node-creative" data-family="creative">Creative Economy &amp; Design</button>
-      <button class="brain-node node-cmos" data-family="cmos">CMOs &amp; Collective Management</button>
-      <button class="brain-node node-unions" data-family="unions">Trade Unions &amp; Social Partners</button>
-      <button class="brain-node node-heritage" data-family="heritage">Heritage &amp; Libraries</button>
-      <button class="brain-node node-education" data-family="education">Education &amp; Mobility</button>
+      <svg
+        class="brain-svg"
+        viewBox="0 0 500 400"
+        role="img"
+        aria-labelledby="brainTitle brainDesc"
+      >
+        <title id="brainTitle">
+          Brain diagram showing six families of organisations in the European cultural and creative sectors
+        </title>
+        <desc id="brainDesc">
+          Creators & Copyright, CMOs, Trade Unions & Social Partners, Heritage & Libraries,
+          Education & Mobility, and Creative Economy & Design.
+        </desc>
 
-      <div class="brain-center-label">
-        EU Cultural &amp; Creative Sectors<br/>
-        <strong>“Brain” of networks &amp; social partners</strong>
-      </div>
-    </div>
+        <!-- Background brain blob -->
+        <defs>
+          <radialGradient id="brainGradient" cx="50%" cy="40%" r="70%">
+            <stop offset="0%" stop-color="#e5e7eb" />
+            <stop offset="100%" stop-color="#d1d5db" />
+          </radialGradient>
+        </defs>
 
-    <aside class="panel">
-      <h2 id="panel-title">Choose a family</h2>
-      <p class="tagline" id="panel-tagline">
-        Click on one of the lobes in the brain to see key European organisations in that part of the ecosystem.
-      </p>
-      <ul class="org-list" id="org-list"></ul>
-    </aside>
-  </div>
+        <ellipse
+          class="brain-bg"
+          cx="250"
+          cy="190"
+          rx="210"
+          ry="150"
+          fill="url(#brainGradient)"
+          opacity="0.35"
+        />
+        <ellipse
+          class="brain-outline"
+          cx="250"
+          cy="190"
+          rx="210"
+          ry="150"
+        />
 
-  <script>
-    const families = {
-      creators: {
-        title: "Creators & Copyright",
-        tagline: "European organisations speaking for writers, composers, directors, translators and game developers in EU copyright, AI and contract debates.",
-        organisations: [
-          {
-            name: "ECSA – European Composer and Songwriter Alliance",
-            type: "Music creators",
-            url: "https://composeralliance.org",
-            role: "Represents composers and songwriters in EU music, copyright and AI policy."
-          },
-          {
-            name: "EWC – European Writers’ Council",
-            type: "Writers & literary translators",
-            url: "https://europeanwriterscouncil.eu",
-            role: "Advocates for authors’ rights in EU copyright, contracts and platform regulation."
-          },
-          {
-            name: "CEATL – European Council of Literary Translators’ Associations",
-            type: "Literary translators",
-            url: "https://www.ceatl.eu",
-            role: "Gives translators a voice in language diversity and copyright debates."
-          },
-          {
-            name: "AVTE – AudioVisual Translators Europe",
-            type: "AV translators & subtitlers",
-            url: "https://www.avteurope.eu",
-            role: "Works on fair remuneration and standards for subtitling and dubbing."
-          },
-          {
-            name: "FERA – Federation of European Screen Directors",
-            type: "Film & TV directors",
-            url: "https://feraonline.org",
-            role: "Represents screen directors in audiovisual and copyright policy."
-          },
-          {
-            name: "EGDF – European Games Developer Federation",
-            type: "Game developers",
-            url: "https://www.egdf.eu",
-            role: "Brings the video games perspective into digital, IP and innovation policies."
-          },
-          {
-            name: "IMPALA – Independent Music Companies Association",
-            type: "Independent music companies",
-            url: "https://www.impalamusic.org",
-            role: "Voices the interests of independent labels in competition and digital policies."
-          }
-        ]
-      },
+        <!--
+          Lobe positions chosen so ellipses never overlap:
+          rx = 75, ry = 40; vertical distances between rows >= 105,
+          horizontal distance between left/right = 200.
+        -->
 
-      cmos: {
-        title: "CMOs & Collective Management",
-        tagline: "European umbrellas for collective management organisations (CMOs) in the visual, performers’ and audiovisual fields.",
-        organisations: [
-          {
-            name: "AEPO-ARTIS – Association of European Performers’ Organisations",
-            type: "Performers’ CMOs",
-            url: "https://aepo-artis.org",
-            role: "Represents performers’ CMOs in EU neighbouring-rights and copyright reform."
-          },
-          {
-            name: "EVA – European Visual Artists",
-            type: "Visual authors’ CMOs",
-            url: "https://www.evartists.org",
-            role: "Advocates for visual artists in image rights, reprography and AI-related policy."
-          },
-          {
-            name: "SAA – Society of Audiovisual Authors",
-            type: "Audiovisual authors’ CMOs",
-            url: "https://www.saa-authors.eu",
-            role: "Represents screenwriters’ and directors’ CMOs in EU audiovisual policy."
-          }
-        ]
-      },
+        <!-- Top centre: Creators -->
+        <g class="lobe active" data-id="creators" role="button" tabindex="0">
+          <ellipse cx="250" cy="60" rx="75" ry="40" />
+          <text x="250" y="55" text-anchor="middle">Creators &amp;</text>
+          <text x="250" y="72" text-anchor="middle">Copyright</text>
+        </g>
 
-      unions: {
-        title: "Trade Unions & Social Partners",
-        tagline: "Workers’ and employers’ organisations recognised in EU sectoral social dialogue for live performance and audiovisual.",
-        organisations: [
-          {
-            name: "FIA – International Federation of Actors",
-            type: "Workers’ federation",
-            url: "https://fia-actors.com",
-            role: "EU social partner (workers) for actors and performers in AV and live performance."
-          },
-          {
-            name: "FIM – International Federation of Musicians",
-            type: "Workers’ federation",
-            url: "https://www.fim-musicians.org",
-            role: "Represents performing musicians in social dialogue on working conditions."
-          },
-          {
-            name: "UNI Europa – Media, Entertainment & Arts (EURO-MEI)",
-            type: "Workers’ federation",
-            url: "https://www.uni-europa.org/sectors/media-entertainment/",
-            role: "Trade-union federation for media, entertainment and arts workers."
-          },
-          {
-            name: "EFJ – European Federation of Journalists",
-            type: "Workers’ federation",
-            url: "https://europeanjournalists.org",
-            role: "Represents journalists in the AV social dialogue and media freedom debates."
-          },
-          {
-            name: "Pearle* – Live Performance Europe",
-            type: "Employers’ federation",
-            url: "https://www.pearle.eu",
-            role: "Official EU social partner for live performance employers."
-          },
-          {
-            name: "EBU – European Broadcasting Union",
-            type: "Employers’ organisation",
-            url: "https://www.ebu.ch",
-            role: "Public-service media employer in the AV social dialogue."
-          },
-          {
-            name: "ACT – Association of Commercial Television & VoD in Europe",
-            type: "Employers’ association",
-            url: "https://www.acte.be",
-            role: "Represents commercial TV and VoD in AV social dialogue and media regulation."
-          },
-          {
-            name: "AER – Association of European Radios",
-            type: "Employers’ association",
-            url: "https://www.aereurope.org",
-            role: "Commercial radio voice in AV social dialogue and media policy."
-          },
-          {
-            name: "CEPI – European Audiovisual Production Association",
-            type: "Employers’ association",
-            url: "https://www.cepi-producers.eu",
-            role: "Represents independent AV producers in EU regulation and industrial policy."
-          },
-          {
-            name: "FIAPF – Int’l Federation of Film Producers Associations",
-            type: "Employers’ association",
-            url: "https://www.fiapf.org",
-            role: "Film producers’ voice on copyright and market access at EU level."
-          },
-          {
-            name: "Creative Skills Europe",
-            type: "Joint skills council",
-            url: "https://www.creativeskillseurope.eu",
-            role: "Joint platform of social partners for skills and training in AV and live performance."
-          }
-        ]
-      },
+        <!-- Left upper: CMOs -->
+        <g class="lobe" data-id="cmos" role="button" tabindex="0">
+          <ellipse cx="150" cy="165" rx="75" ry="40" />
+          <text x="150" y="160" text-anchor="middle">CMOs &amp;</text>
+          <text x="150" y="177" text-anchor="middle">Collective Mgmt</text>
+        </g>
 
-      heritage: {
-        title: "Heritage, Museums & Libraries",
-        tagline: "Networks that anchor culture as democratic and knowledge infrastructure across Europe.",
-        organisations: [
-          {
-            name: "NEMO – Network of European Museum Organisations",
-            type: "Museums",
-            url: "https://www.ne-mo.org",
-            role: "Represents museums in EU culture, digitalisation and education policies."
-          },
-          {
-            name: "E.C.C.O. – European Confederation of Conservator-Restorers’ Organisations",
-            type: "Conservators & restorers",
-            url: "https://www.ecco-eu.org",
-            role: "Works on standards, skills and recognition for heritage professionals."
-          },
-          {
-            name: "Mad'in Europe",
-            type: "Heritage crafts network",
-            url: "https://www.madineurope.eu",
-            role: "Connects heritage crafts professionals and links them to EU skills and SME policy."
-          },
-          {
-            name: "EBLIDA – European Bureau of Library, Information and Documentation Associations",
-            type: "Libraries & information sector",
-            url: "https://www.eblida.org",
-            role: "Represents libraries in copyright, digital transformation and access-to-knowledge debates."
-          }
-        ]
-      },
+        <!-- Right upper: Social Partners -->
+        <g class="lobe" data-id="unions" role="button" tabindex="0">
+          <ellipse cx="350" cy="165" rx="75" ry="40" />
+          <text x="350" y="160" text-anchor="middle">Trade Unions</text>
+          <text x="350" y="177" text-anchor="middle">&amp; Social Partners</text>
+        </g>
 
-      education: {
-        title: "Education, Skills & Mobility",
-        tagline: "Organisations linking arts education, lifelong learning and mobility to EU skills and values agendas.",
-        organisations: [
-          {
-            name: "ELIA – European League of Institutes of the Arts",
-            type: "Arts universities",
-            url: "https://elia-artschools.org",
-            role: "Represents arts HEIs in Erasmus+, Horizon and cultural policy debates."
-          },
-          {
-            name: "AEC – European Association of Conservatoires",
-            type: "Music higher education",
-            url: "https://aec-music.eu",
-            role: "Key actor in the Bologna Process and music education policy."
-          },
-          {
-            name: "On the Move",
-            type: "Mobility network",
-            url: "https://on-the-move.org",
-            role: "Expert partner on mobility schemes and working across borders."
-          },
-          {
-            name: "Creative Skills Europe",
-            type: "Joint skills council",
-            url: "https://www.creativeskillseurope.eu",
-            role: "Connects social partners around training and skills for AV & live performance."
-          }
-        ]
-      },
+        <!-- Left lower: Heritage -->
+        <g class="lobe" data-id="heritage" role="button" tabindex="0">
+          <ellipse cx="150" cy="275" rx="75" ry="40" />
+          <text x="150" y="270" text-anchor="middle">Heritage &amp;</text>
+          <text x="150" y="287" text-anchor="middle">Libraries</text>
+        </g>
 
-      creative: {
-        title: "Creative Economy, Design & Cross-sector Culture",
-        tagline: "Networks that connect culture with innovation, regional development and international cultural relations.",
-        organisations: [
-          {
-            name: "CreativeFED – European Federation of Creative Economy",
-            type: "Creative economy umbrella",
-            url: "https://creativefed.eu",
-            role: "Advocates for creative ecosystems in EU industrial, regional and skills policies."
-          },
-          {
-            name: "ECHN – European Creative Hubs Network",
-            type: "Creative hubs network",
-            url: "https://www.creativehubs.net",
-            role: "Represents hubs, makerspaces and coworking spaces as innovation engines."
-          },
-          {
-            name: "BEDA – Bureau of European Design Associations",
-            type: "Design umbrella",
-            url: "https://beda.org",
-            role: "Main design interlocutor for New European Bauhaus and innovation policies."
-          },
-          {
-            name: "ACE – Architects’ Council of Europe",
-            type: "Architects’ council",
-            url: "https://www.ace-cae.eu",
-            role: "Represents architects in EU built-environment and NEB policies."
-          },
-          {
-            name: "CAE – Culture Action Europe",
-            type: "Cross-sector cultural network",
-            url: "https://cultureactioneurope.org",
-            role: "Civil-society voice on culture across EU policy fields."
-          },
-          {
-            name: "ENCC – European Network of Cultural Centres",
-            type: "Cultural centres network",
-            url: "https://www.encc.eu",
-            role: "Brings local cultural centres into EU debates on participation and cohesion."
-          },
-          {
-            name: "EFA – European Festivals Association",
-            type: "Festivals network",
-            url: "https://www.european-festivals.eu",
-            role: "Connects arts festivals to cultural, tourism and cohesion agendas."
-          },
-          {
-            name: "EMC – European Music Council",
-            type: "Music council",
-            url: "https://www.emc-imc.org",
-            role: "Advises EU on music ecosystems and policies."
-          },
-          {
-            name: "European Choral Association",
-            type: "Choral network",
-            url: "https://europeanchoralassociation.org",
-            role: "Highlights participation and wellbeing through collective singing."
-          },
-          {
-            name: "EUNIC – EU National Institutes for Culture",
-            type: "Cultural relations network",
-            url: "https://www.eunicglobal.eu",
-            role: "Implements cultural-diplomacy projects with EU delegations."
-          },
-          {
-            name: "ADICLUS – European Arts and Disability Cluster",
-            type: "Inclusion cluster",
-            url: "https://adiclus.eu",
-            role: "Brings disability and inclusion perspectives into EU cultural projects."
-          }
-        ]
-      }
-    };
-
-    const nodes = document.querySelectorAll(".brain-node");
-    const titleEl = document.getElementById("panel-title");
-    const taglineEl = document.getElementById("panel-tagline");
-    const listEl = document.getElementById("org-list");
-
-    function renderFamily(key) {
-      nodes.forEach(n => n.classList.toggle("active", n.dataset.family === key));
-      const fam = families[key];
-      if (!fam) return;
-      titleEl.textContent = fam.title;
-      taglineEl.textContent = fam.tagline;
-      listEl.innerHTML = "";
-      fam.organisations.forEach(org => {
-        const li = document.createEleme
+        <!-- Right lower: Education -->
+        <g
