@@ -246,4 +246,201 @@
         </g>
 
         <!-- Right lower: Education -->
-        <g
+        <g class="lobe" data-id="education" role="button" tabindex="0">
+          <ellipse cx="350" cy="275" rx="75" ry="40" />
+          <text x="350" y="270" text-anchor="middle">Education &amp;</text>
+          <text x="350" y="287" text-anchor="middle">Mobility</text>
+        </g>
+
+        <!-- Bottom centre: Creative economy -->
+        <g class="lobe" data-id="creative" role="button" tabindex="0">
+          <ellipse cx="250" cy="340" rx="75" ry="40" />
+          <text x="250" y="335" text-anchor="middle">Creative</text>
+          <text x="250" y="352" text-anchor="middle">Economy &amp; Design</text>
+        </g>
+      </svg>
+
+      <p class="hint">
+        Klik op een lobe (of gebruik <kbd>Tab</kbd> + <kbd>Enter</kbd>) om de bijbehorende organisaties rechts te zien.
+      </p>
+    </section>
+
+    <!-- RIGHT: INFO PANEL -->
+    <section class="card info-panel" aria-live="polite">
+      <div class="pill">
+        <span class="pill-dot"></span>
+        EU role in cultural & creative policy
+      </div>
+      <h2 class="lobe-title" id="info-title">Creators &amp; Copyright</h2>
+      <p class="lobe-subtitle" id="info-subtitle">
+        Organisations speaking for writers, composers, directors, translators and game developers.
+      </p>
+
+      <div class="info-body" id="info-body">
+        <!-- content filled by JS -->
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const lobeData = {
+      creators: {
+        title: "Creators & Copyright",
+        subtitle:
+          "Organisations representing individual creators in EU copyright, AI and contract debates.",
+        body: `
+          <p>
+            These networks bring the voice of authors and creators directly into EU policy
+            on copyright, AI, contracts and platform regulation.
+          </p>
+          <ul>
+            <li><strong>ECSA – European Composer and Songwriter Alliance</strong> (music creators)</li>
+            <li><strong>EWC – European Writers’ Council</strong> (writers & literary translators)</li>
+            <li><strong>CEATL – European Council of Literary Translators’ Associations</strong> (literary translators)</li>
+            <li><strong>AVTE – AudioVisual Translators Europe</strong> (subtitlers & dubbing translators)</li>
+            <li><strong>FERA – Federation of European Screen Directors</strong> (film & TV directors)</li>
+            <li><strong>EGDF – European Games Developer Federation</strong> (game developers)</li>
+            <li><strong>IMPALA – Independent Music Companies Association</strong> (independent labels & producers)</li>
+          </ul>
+        `
+      },
+      cmos: {
+        title: "CMOs & Collective Management",
+        subtitle:
+          "European umbrellas for collective management organisations (CMOs) in different repertoires.",
+        body: `
+          <p>
+            These organisations coordinate collecting societies and negotiate the framework
+            for fair remuneration of authors and performers across borders.
+          </p>
+          <ul>
+            <li><strong>AEPO-ARTIS – Association of European Performers’ Organisations</strong> (performers’ CMOs)</li>
+            <li><strong>EVA – European Visual Artists</strong> (visual authors’ CMOs)</li>
+            <li><strong>SAA – Society of Audiovisual Authors</strong> (screenwriters’ & directors’ CMOs)</li>
+          </ul>
+        `
+      },
+      unions: {
+        title: "Trade Unions & Social Partners",
+        subtitle:
+          "Workers’ and employers’ organisations recognised in EU sectoral social dialogue.",
+        body: `
+          <p>
+            Here you find the formal social partners negotiating on working conditions,
+            social protection and skills in the live performance and audiovisual sectors.
+          </p>
+          <ul>
+            <li><strong>FIA – International Federation of Actors</strong> (actors & performers)</li>
+            <li><strong>FIM – International Federation of Musicians</strong> (performing musicians)</li>
+            <li><strong>UNI Europa – Media, Entertainment & Arts (EURO-MEI)</strong> (media & entertainment workers)</li>
+            <li><strong>EFJ – European Federation of Journalists</strong> (journalists & media workers)</li>
+            <li><strong>Pearle* – Live Performance Europe</strong> (live performance employers)</li>
+            <li><strong>EBU – European Broadcasting Union</strong> (public service media employers)</li>
+            <li><strong>ACT – Association of Commercial Television & VoD</strong> (commercial TV & VoD)</li>
+            <li><strong>AER – Association of European Radios</strong> (commercial radio)</li>
+            <li><strong>CEPI – European Audiovisual Production Association</strong> (independent AV producers)</li>
+            <li><strong>FIAPF – International Federation of Film Producers Associations</strong> (film producers & festivals)</li>
+            <li><strong>Creative Skills Europe</strong> (joint skills council of social partners for AV & live performance)</li>
+          </ul>
+        `
+      },
+      heritage: {
+        title: "Heritage, Museums & Libraries",
+        subtitle:
+          "Networks that safeguard cultural heritage and knowledge as democratic infrastructure.",
+        body: `
+          <p>
+            This family anchors the long-term memory of Europe: heritage, museums and libraries
+            that also supply data and expertise into EU cultural, digital and education policies.
+          </p>
+          <ul>
+            <li><strong>NEMO – Network of European Museum Organisations</strong> (museums & museum associations)</li>
+            <li><strong>E.C.C.O. – European Confederation of Conservator-Restorers’ Organisations</strong> (conservators & restorers)</li>
+            <li><strong>Mad'in Europe</strong> (heritage crafts & restoration professionals)</li>
+            <li><strong>EBLIDA – European Bureau of Library, Information and Documentation Associations</strong> (libraries & information sector)</li>
+          </ul>
+        `
+      },
+      education: {
+        title: "Education, Skills & Mobility",
+        subtitle:
+          "Actors connecting arts education, lifelong learning and mobility to EU skills agendas.",
+        body: `
+          <p>
+            These networks connect higher arts education, continuous learning and mobility
+            to instruments such as Erasmus+, ESF+ and the Pact for Skills.
+          </p>
+          <ul>
+            <li><strong>ELIA – European League of Institutes of the Arts</strong> (art universities & academies)</li>
+            <li><strong>AEC – European Association of Conservatoires</strong> (music higher education institutions)</li>
+            <li><strong>On the Move</strong> (mobility information network for artists & culture workers)</li>
+            <li><strong>Creative Skills Europe</strong> (skills & training platform for AV & live performance social partners)</li>
+          </ul>
+        `
+      },
+      creative: {
+        title: "Creative Economy, Design & Cross-sector Culture",
+        subtitle:
+          "Networks linking culture with innovation, regional development and international relations.",
+        body: `
+          <p>
+            This lobe covers the players that frame CCIs as drivers of competitiveness,
+            innovation, design and place-based development – strongly aligned with the Draghi agenda.
+          </p>
+          <ul>
+            <li><strong>CreativeFED – European Federation of Creative Economy</strong> (creative economy umbrella)</li>
+            <li><strong>ECHN – European Creative Hubs Network</strong> (creative hubs, makerspaces & coworking)</li>
+            <li><strong>BEDA – Bureau of European Design Associations</strong> (design umbrella)</li>
+            <li><strong>ACE – Architects’ Council of Europe</strong> (architecture & built environment)</li>
+            <li><strong>CAE – Culture Action Europe</strong> (cross-sector cultural advocacy)</li>
+            <li><strong>ENCC – European Network of Cultural Centres</strong> (local cultural centres & community arts)</li>
+            <li><strong>EFA – European Festivals Association</strong> (arts & multidisciplinary festivals)</li>
+            <li><strong>EMC – European Music Council</strong> (music ecosystems & policy)</li>
+            <li><strong>European Choral Association</strong> (participatory singing & wellbeing)</li>
+            <li><strong>EUNIC – EU National Institutes for Culture</strong> (cultural relations & diplomacy)</li>
+            <li><strong>ADICLUS – European Arts and Disability Cluster</strong> (inclusion & disability perspective)</li>
+          </ul>
+        `
+      }
+    };
+
+    const lobeEls    = Array.from(document.querySelectorAll(".lobe"));
+    const titleEl    = document.getElementById("info-title");
+    const subtitleEl = document.getElementById("info-subtitle");
+    const bodyEl     = document.getElementById("info-body");
+
+    function setActiveLobe(id) {
+      const data = lobeData[id];
+      if (!data) return;
+
+      lobeEls.forEach(l => l.classList.remove("active"));
+
+      const activeEl = lobeEls.find(l => l.dataset.id === id);
+      if (activeEl) {
+        activeEl.classList.add("active");
+        activeEl.focus({ preventScroll: true });
+      }
+
+      titleEl.textContent    = data.title;
+      subtitleEl.textContent = data.subtitle;
+      bodyEl.innerHTML       = data.body;
+    }
+
+    lobeEls.forEach(lobe => {
+      lobe.addEventListener("click", () => {
+        setActiveLobe(lobe.dataset.id);
+      });
+
+      lobe.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          setActiveLobe(lobe.dataset.id);
+        }
+      });
+    });
+
+    // Start with Creators selected
+    setActiveLobe("creators");
+  </script>
+</body>
+</html>
